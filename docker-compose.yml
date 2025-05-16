@@ -1,0 +1,27 @@
+     version: '3.8'
+
+     services:
+       fastapi:
+         build: .
+         container_name: fastapi
+         restart: always
+         expose:
+           - "8000"
+         environment:
+           - ENV=production
+         volumes:
+           - ./ckpts:/app/ckpts
+           - ./faceutils:/app/faceutils
+
+       nginx:
+         image: nginx:latest
+         container_name: nginx
+         restart: always
+         ports:
+           - "80:80"
+           - "443:443"
+         volumes:
+           - ./nginx.conf:/etc/nginx/conf.d/default.conf
+           - /etc/letsencrypt:/etc/letsencrypt
+         depends_on:
+           - fastapi
