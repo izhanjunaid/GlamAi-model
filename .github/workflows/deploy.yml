@@ -18,6 +18,11 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: Add droplet to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.DROPLET_IP }} >> ~/.ssh/known_hosts
+
       - name: Copy files to droplet
         run: |
           rsync -avz --exclude='.git' --exclude='node_modules' ./ ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_IP }}:/home/${{ secrets.DROPLET_USER }}/app
