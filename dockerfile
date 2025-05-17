@@ -1,9 +1,13 @@
-FROM continuumio/miniconda3:4.12.0
+FROM continuumio/miniconda3:latest
 
 WORKDIR /app
 
 COPY environment.yml /app/environment.yml
-RUN conda env create -f environment.yml
+COPY requirements.txt /app/requirements.txt
+
+RUN conda env create -f environment.yml --no-pip && \
+    conda run -n elegant pip install -r requirements.txt && \
+    conda clean -afy
 
 SHELL ["conda", "run", "-n", "elegant", "/bin/bash", "-c"]
 
